@@ -1,7 +1,7 @@
 import {Component} from "./base/Component";
-import {IProductItem, ProductCategory, CategoryCssClass} from "../types";
+import {ProductCategory} from "../types";
 import {ProductCategoryMap} from '../utils/constants';
-import {bem, createElement, ensureElement, formatNumber} from "../utils/utils";
+import {ensureElement} from "../utils/utils";
 
 interface ICardActions {
     onClick: (event: MouseEvent) => void;
@@ -18,17 +18,19 @@ export interface ICard {
 }
 
 export class Card extends Component<ICard> {
-    protected _title: HTMLElement;
+    protected _title?: HTMLElement;
     protected _image?: HTMLImageElement;
     protected _description?: HTMLElement;
     protected _button?: HTMLButtonElement;
     protected _price?: HTMLElement;
+    protected _category?: HTMLElement;
 
     constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
         super(container);
 
         this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
         this._image = ensureElement<HTMLImageElement>(`.${blockName}__image`, container);
+        this._category = ensureElement<HTMLElement>(`.${blockName}__category`, container);
         this._button = container.querySelector(`.${blockName}__button`);
         this._description = container.querySelector(`.${blockName}__description`);
         this._price = container.querySelector(`.${blockName}__price`);
@@ -81,28 +83,6 @@ export class Card extends Component<ICard> {
         if (!this._button.disabled) {
             this._button.disabled = value;
         }
-    }
-}
-
-export class CardPreview extends Card {
-	protected _description: HTMLElement;
-
-	constructor(container: HTMLElement, actions?: ICardActions) {
-		super('card', container, actions);
-		this._description = container.querySelector(`.${this.blockName}__text`);
-	}
-
-	set description(value: string) {
-		this.setText(this._description, value);
-	}
-}
-
-export class CatalogItem extends Card {
-    protected _category: HTMLElement;
-
-    constructor(container: HTMLElement, actions?: ICardActions) {
-        super('card', container, actions);
-        this._category = ensureElement<HTMLElement>(`.card__category`, container);
     }
 
     set category(category: ProductCategory) {
