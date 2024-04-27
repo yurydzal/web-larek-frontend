@@ -1,24 +1,12 @@
-import _, { forEach } from "lodash";
-
 import { Model } from "./base/Model";
 import { FormErrors, IAppState, IBasketItem, IProductItem, ProductCategory, IOrder, PaymentOption, IOrderForm } from "../types";
 
 export type CatalogChangeEvent = {
-    catalog: ProductItem[]
+    catalog: IProductItem[]
 };
 
-export class ProductItem extends Model<IProductItem> {
-    id: string;
-	description: string;
-	image: string;
-	title: string;
-	category: string;
-	price: number | null;
-    inbasket: boolean;
-}
-
 export class AppState extends Model<IAppState> {
-    catalog: ProductItem[];
+    catalog: IProductItem[];
     basket: IBasketItem[] = [];
     preview: string | null;
     order: IOrder = {
@@ -31,16 +19,18 @@ export class AppState extends Model<IAppState> {
     }
     formErrors: FormErrors = {};
 
-    addToBasket(item: ProductItem) {
+    addToBasket(item: IProductItem) {
         this.basket.push(item);
+        this.emitChanges('basket:changed');
     }
 
-    removeFromBasket(item: ProductItem) {
+    removeFromBasket(item: IProductItem) {
         this.basket = this.basket.filter((element) => element.id != item.id);
+        this.emitChanges('basket:changed');
     }
 
     clearBasket() {
-        this.basket = [];
+        this.basket.forEach((item) => this.emitChanges('basket:remove', item));
         this.order = {
             address: '',
             email: '',
@@ -60,16 +50,16 @@ export class AppState extends Model<IAppState> {
     }
 
     setCatalog(items: IProductItem[]) {
-        this.catalog = items.map(item => new ProductItem(item, this.events));
+        this.catalog = items;
         this.emitChanges('items:changed', { catalog: this.catalog });
     }
 
-    setPreview(item: ProductItem) {
+    setPreview(item: IProductItem) {
         this.preview = item.id;
         this.emitChanges('preview:changed', item);
     }
 
-    getProducts(): ProductItem[] {
+    getProducts(): IProductItem[] {
         return this.catalog
             .filter(item => item.inbasket === true)
     }

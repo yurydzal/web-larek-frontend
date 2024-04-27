@@ -33,14 +33,6 @@ export interface IAppState {
     basket: IBasketItem[]; // массив продуктов в корзине
     preview: string | null; // превтю карточки продукта
     order: IOrder | null; // параметры заказа
-    // addToBasket(id: string): void; // метод добавления продукта в корзину
-    // removeFromBasket(id: string): void; // метод удаления продукта из корзины
-    // clearBasket(): void; // метод полной очистки корзины
-    // getTotal(): number; // метод получения общей стоимости корзины
-    // setCatalog(items: IProductItem[]): void; // метод обработки данных продуктов
-    // setPreview(item: IProductItem): void; // метод отображения превью продукта
-    // setOrderField(field: keyof IOrderForm, value: string): void; // метод заполнения форм при заказе
-    // validateOrder(): boolean; // метод валидации форм при оформлении заказа
 }
 
 // тип описывает возможные варианты оплаты заказа

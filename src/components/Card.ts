@@ -89,7 +89,7 @@ export class Card extends Component<ICard> {
         const keyToFind = category;
         const object = ProductCategoryMap.find(item => item.key === keyToFind);
 
-        this._category.textContent = category;
+        this.setText(this._category, category);
         this._category.classList.add(object.value);
     }
 }

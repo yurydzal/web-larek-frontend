@@ -3,7 +3,7 @@ import './scss/styles.scss';
 import { ProductAPI } from './components/ProductAPI';
 import { API_URL, CDN_URL } from './utils/constants';
 import { EventEmitter } from './components/base/events';
-import { AppState, CatalogChangeEvent, ProductItem } from "./components/AppData";
+import { AppState, CatalogChangeEvent } from "./components/AppData";
 import { Page } from "./components/Page";
 import { Card } from "./components/Card";
 import { cloneTemplate, createElement, ensureElement } from './utils/utils';
@@ -63,13 +63,13 @@ events.on<CatalogChangeEvent>('items:changed', () => {
 });
 
 // Открыть карточку продукта
-events.on('card:select', (item: ProductItem) => {
+events.on('card:select', (item: IProductItem) => {
     appData.setPreview(item);
 });
 
 // Изменен открытый выбранный продукт
-events.on('preview:changed', (item: ProductItem) => {
-    const showItem = (item: ProductItem) => {
+events.on('preview:changed', (item: IProductItem) => {
+    const showItem = (item: IProductItem) => {
         const card = new Card('card', cloneTemplate(cardPreviewTemplate), {
             onClick: () => events.emit('basket:add', item)
         })
@@ -101,18 +101,16 @@ events.on('preview:changed', (item: ProductItem) => {
 });
 
 // Добавление в корзину
-events.on('basket:add', (item: ProductItem) => {
+events.on('basket:add', (item: IProductItem) => {
     item.inbasket = true;
     appData.addToBasket(item);
-    events.emit('basket:changed');
     modal.close();
 })
 
 // Удаление из корзины
-events.on('basket:remove', (item: ProductItem) => {
+events.on('basket:remove', (item: IProductItem) => {
     item.inbasket = false;
     appData.removeFromBasket(item);
-    events.emit('basket:changed');
 })
 
 // Открытие корзины
@@ -148,8 +146,8 @@ events.on('order:open', () => {
 	modal.render({
 		content: order.render({
             payment: null,
-			address: '',
-			valid: false,
+			address: appData.order.address,
+			valid: appData.validateOrder(),
 			errors: [],
 		}),
 	});
@@ -163,9 +161,9 @@ events.on('order:submit', () => {
 	appData.validateContacts();
 	modal.render({
 		content: contacts.render({
-            email: '',
-            phone: '',
-			valid: false,
+            email: appData.order.email,
+            phone: appData.order.phone,
+			valid: appData.validateContacts(),
 			errors: [],
 		}),
 	});
@@ -191,7 +189,6 @@ events.on('contacts:submit', () => {
     .catch(err => {
         console.error(err);
     });
-    // events.emit('basket:changed');
 });
 
 // Изменилось состояние валидации формы
@@ -233,4 +230,3 @@ api.getProductList()
     .catch(err => {
         console.error(err);
     });
-

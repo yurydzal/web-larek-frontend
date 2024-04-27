@@ -346,10 +346,10 @@ class AppState extends Model<IAppState> {
     setCatalog(items: IProductItem[]) {}
 
     // Устанавливает превью продукта
-    setPreview(item: ProductItem) {}
+    setPreview(item: IProductItem) {}
 
     // Выдаёт массив товаров из корзине
-    getProducts(): ProductItem[] {}
+    getProducts(): IProductItem[] {}
 
     // Добавляет метод оплаты
     setPaymentOption(value: PaymentOption) {}

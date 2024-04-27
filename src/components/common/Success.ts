@@ -21,7 +21,7 @@ export class Success extends Component<ISuccess> {
 
         if (actions?.onClick) {
             this._close.addEventListener('click', actions.onClick);
-            this._total.textContent = `Списано ${data} синапсов`;
+            this.setText(this._total, `Списано ${data} синапсов`);
         }
     }
 }
